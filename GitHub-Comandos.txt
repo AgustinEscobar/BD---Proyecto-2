@@ -1,0 +1,6 @@
+siempre cuando queremos guardar los cambios hacer:
+
+- git add * 
+- git pull origin master
+- git commit -m "name_commit"
+- git push origin master 
