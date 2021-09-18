@@ -25,7 +25,7 @@ CREATE TABLE Sucursal (
 
     CONSTRAINT FK_sucursal_ciudad
     FOREING KEY (cod_postal) REFERENCES Ciudad (cod_postal)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE= InnoDB;
 
 CREATE TABLE Empleado (
@@ -45,7 +45,7 @@ CREATE TABLE Empleado (
 
     CONSTRAINT FK_empleado_sucursal
     FOREIGN KEY (nro_suc) REFERENCES Sucursal (nro_suc)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE= InnoDB;
 
 CREATE TABLE Cliente (
@@ -63,7 +63,7 @@ CREATE TABLE Cliente (
 ) ENGINE= InnoDB;
 
 CREATE TABLE Plazo_Fijo (
-    nro_plazo INT UNSIGNED NOT NULL,
+    nro_plazo SMALLINT UNSIGNED NOT NULL,
     capital REAL UNSIGNED NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE Plazo_Fijo (
 
     CONSTRAINT FK_plazo_fijo_sucursal
     FOREIGN KEY (nro_suc) REFERENCES Sucursal (nro_suc)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE= InnoDB;
 
 CREATE TABLE Tasa_plazo_fijo {
@@ -127,7 +127,7 @@ CREATE TABLE Pago { #ENTIDAD DEBIL
 } ENGINE = InnoDB;
 
 CREATE TABLE Tasa_prestamo {
-	periodo SMALLINT NOT NULL,
+	periodo SMALLINT UNSIGNED NOT NULL,
 	monto_inf FLOAT UNSIGNED NOT NULL,
 	monto_sup FLOAT UNSIGNED NOT NULL,
 	tasa DECIMAL 6,2 UNSIGNED NOT NULL,
@@ -280,7 +280,7 @@ CREATE TABLE Transferencia (
 #---  Creacion Tablas para las relaciones   ------------------------------
 
 CREATE TABLE Plazo_cliente {
-	nro_plazo SMALLINT NOT NULL,
+	nro_plazo SMALLINT unsigned NOT NULL,
 	nro_cliente INT UNSIGNED NOT NULL,
 	
 	CONSTRAINT pk_plazo_cliente
@@ -311,8 +311,19 @@ CREATE TABLE  Cliente_CA{
 		ON DELETE RESTRICT ON UPDATE CASCADE
 } ENGINE = InnoDB;
 
+#-------------------------------------------------------------------------
+# Creacion de usuarios y otorgamiento de privilegios
+#-------------------------------------------------------------------------
 
+# Usuario admin
+CREATE USER 'admin'@'localhost'  IDENTIFIED BY 'admin';
+GRANT ALL PRIVILEGES ON banco.* TO 'admin'@'localhost' WITH GRANT OPTION;
 
-
+# Usuario empleado
+CREATE USER 'empleado'@'%'  IDENTIFIED BY 'empleado';
+GRANT SELECT ON banco.Empleado, banco.Sucursal, banco.Tasa_plazo_fijo, banco.Tasa_prestamo, banco.Prestamo TO 'empleado'@'%';
+GRANT SELECT,INSERT ON banco.Prestamo, banco.Plazo_fijo, banco.Plazo_cliente, banco.Caja_ahorro, banco.Tarjeta TO 'empleado'@'%';
+GRANT SELECT,INSERT,UPDATE ON banco.Cliente_CA, banco.Cliente, banco.Pago TO 'empleado'@'%';
+    
 
 
