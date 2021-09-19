@@ -79,7 +79,7 @@ CREATE TABLE Plazo_Fijo (
         ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE= InnoDB;
 
-CREATE TABLE Tasa_plazo_fijo {
+CREATE TABLE Tasa_plazo_fijo (
 	periodo SMALLINT UNSIGNED NOT NULL,
 	monto_inf FLOAT UNSIGNED NOT NULL,
 	monto_sup FLOAT UNSIGNED NOT NULL,
@@ -87,9 +87,9 @@ CREATE TABLE Tasa_plazo_fijo {
 	
 	CONSTRAINT pk_tasa_plaza_fijo
 	PRIMARY KEY(periodo, monto_inf, monto_sup)
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE Prestamo {
+CREATE TABLE Prestamo (
 	nro_prestamo INT NOT NULL,
 	fecha DATE NOT NULL,
 	cant_meses SMALLINT NOT NULL,
@@ -110,9 +110,9 @@ CREATE TABLE Prestamo {
 	CONSTRAINT FK_prestamo_cliente
 	FOREIGN KEY (nro_cliente) REFERENCES Cliente (nro_cliente)
 		ON DELETE RESTRICT ON UPDATE CASCADE
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE Pago { #ENTIDAD DEBIL
+CREATE TABLE Pago ( #ENTIDAD DEBIL
 	nro_prestamo INT NOT NULL,
 	nro_pago SMALLINT NOT NULL,
 	fecha_venc DATE NOT NULL,
@@ -124,9 +124,9 @@ CREATE TABLE Pago { #ENTIDAD DEBIL
 	CONSTRAINT FK_pago_prestamo
 	FOREIGN KEY (nro_prestamo) REFERENCES Prestamo (nro_prestamo)
 		ON DELETE RESTRICT ON UPDATE CASCADE
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE Tasa_prestamo {
+CREATE TABLE Tasa_prestamo (
 	periodo SMALLINT UNSIGNED NOT NULL,
 	monto_inf FLOAT UNSIGNED NOT NULL,
 	monto_sup FLOAT UNSIGNED NOT NULL,
@@ -134,18 +134,18 @@ CREATE TABLE Tasa_prestamo {
 	
 	CONSTRAINT pk_tasa_prestamo
 	PRIMARY KEY (periodo,monto_inf,monto_sup)
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE Caja_ahorro {
+CREATE TABLE Caja_ahorro (
 	nro_ca INT NOT NULL,
 	CBU INT NOT NULL,
 	saldo FLOAT UNSIGNED NOT NULL,
 	
 	CONSTRAINT pk_caja_ahorro
 	PRIMARY KEY(nro_ca)
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE Tarjeta {
+CREATE TABLE Tarjeta (
 	nro_tarjeta INT NOT NULL,
 	PIN VARCHAR(32) NOT NULL,
 	CVT VARCHAR(32) NOT NULL,
@@ -163,16 +163,16 @@ CREATE TABLE Tarjeta {
 	CONSTRAINT FK_tarjeta_cliente_ca
 	FOREIGN KEY (nro_ca) REFERENCES Cliente_CA (nro_ca)
 		ON DELETE RESTRICT ON UPDATE CASCADE
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE Caja {
+CREATE TABLE Caja (
 	cod_caja INT NOT NULL,
 	
 	CONSTRAINT pk_caja
 	PRIMARY KEY (cod_caja)
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE Ventanilla {
+CREATE TABLE Ventanilla (
 	cod_caja INT NOT NULL,
 	nro_suc SMALLINT UNSIGNED NOT NULL,
 	
@@ -186,9 +186,9 @@ CREATE TABLE Ventanilla {
 	CONSTRAINT FK_ventanilla_sucursal
 	FOREIGN KEY (nro_suc) REFERENCES Sucursal (nro_suc)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE ATM {
+CREATE TABLE ATM (
 	cod_caja INT NOT NULL,
 	cod_postal SMALLINT UNSIGNED NOT NULL,
 	direccion VARCHAR(25) NOT NULL,
@@ -203,7 +203,7 @@ CREATE TABLE ATM {
 	CONSTRAINT FK_ATM_ciudad
 	FOREIGN KEY (cod_postal) REFERENCES Ciudad (cod_postal)
 		ON DELETE RESTRICT ON UPDATE CASCADE
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
 CREATE TABLE Transaccion (
     nro_trans BIGINT UNSIGNED NOT NULL,
@@ -279,7 +279,7 @@ CREATE TABLE Transferencia (
 #-------------------------------------------------------------------------
 #---  Creacion Tablas para las relaciones   ------------------------------
 
-CREATE TABLE Plazo_cliente {
+CREATE TABLE Plazo_cliente (
 	nro_plazo SMALLINT unsigned NOT NULL,
 	nro_cliente INT UNSIGNED NOT NULL,
 	
@@ -293,9 +293,9 @@ CREATE TABLE Plazo_cliente {
 	CONSTRAINT FK_plazo_cliente_cliente
 	FOREIGN KEY (nro_cliente) REFERENCES Cliente (nro_cliente)
 		ON DELETE RESTRICT ON UPDATE CASCADE
-} ENGINE = InnoDB;
+) ENGINE = InnoDB;
 
-CREATE TABLE  Cliente_CA{
+CREATE TABLE  Cliente_CA (
 	nro_cliente INT UNSIGNED NOT NULL,
 	nro_ca INT NOT NULL,
 	
@@ -309,7 +309,7 @@ CREATE TABLE  Cliente_CA{
 	CONSTRAINT FK_plazo_cliente_ca_caja_ahorro
 	FOREIGN KEY (nro_ca) REFERENCES Caja_ahorro (nro_ca)
 		ON DELETE RESTRICT ON UPDATE CASCADE
-} ENGINE = InnoDB;
+ ) ENGINE = InnoDB;
 
 #-------------------------------------------------------------------------
 # Creacion de usuarios y otorgamiento de privilegios
