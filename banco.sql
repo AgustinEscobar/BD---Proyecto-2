@@ -333,20 +333,72 @@ CREATE TABLE Transferencia (
         ON DELETE RESTRICT ON UPDATE CASCADE	
 ) ENGINE= InnoDB;
 
+#-------------------------------------------------------------------------
+# Creacion de vistas
+#-------------------------------------------------------------------------
+
+CREATE VIEW trans_cajas_ahorro AS 
+((SELECT d.nro_ca, ca.saldo, d.nro_trans, tr.fecha, tr.hora,'debito' AS tipo, tr.monto, NULL AS cod_caja, d.nro_cliente, cl.tipo_doc, cl.nro_doc, cl.nombre, cl.apellido, NULL AS destino
+FROM ((((debito AS d JOIN caja_ahorro AS ca ON (d.nro_ca = ca.nro_ca)) 
+		JOIN cliente AS cl ON (cl.nro_cliente = d.nro_cliente)) 
+		JOIN transaccion AS tr ON (tr.nro_trans = d.nro_trans))
+		)
+UNION
+
+SELECT d.nro_ca, ca.saldo, d.nro_trans, tr.fecha, tr.hora, 'deposito' AS tipo, tr.monto, tc.cod_caja, NULL AS nro_cliente, NULL AS tipo_doc, NULL AS nro_doc, NULL AS nombre, NULL AS apellido, NULL AS destino
+FROM (((deposito AS d JOIN transaccion AS tr ON (d.nro_trans = tr.nro_trans)) 
+		JOIN transaccion_por_caja AS tc ON (tr.nro_trans = tc.nro_trans))
+		JOIN caja_ahorro AS ca ON (ca.nro_ca = d.nro_ca)
+		)
+)
+UNION
+SELECT ex.nro_ca, ca.saldo, ex.nro_trans, tr.fecha, tr.hora, 'extraccion' tipo, tr.monto, tc.cod_caja, ex.nro_cliente, tipo_doc, nro_doc, nombre, apellido, NULL AS destino
+FROM ((((extraccion AS ex JOIN caja_ahorro AS ca ON (ex.nro_ca = ca.nro_ca)) 
+		JOIN transaccion AS tr ON (tr.nro_trans = ex.nro_trans)) 
+		JOIN transaccion_por_caja AS tc ON (tc.nro_trans = ex.nro_trans))
+		JOIN cliente AS cl ON (cl.nro_cliente = ex.nro_cliente)
+		)
+)
+UNION
+SELECT clca.nro_ca, saldo, transf.nro_trans, fecha, hora, 'transferencia' AS tipo, monto, cod_caja, transf.nro_cliente, tipo_doc, nro_doc, nombre, apellido, destino
+FROM ((((((transferencia AS transf JOIN cliente_ca AS clca ON (transf.nro_cliente = clca.nro_cliente))
+		JOIN caja_ahorro AS ca ON (ca.nro_ca = clca.nro_ca))
+		JOIN transaccion AS transa ON (transa.nro_trans = transf.nro_trans)))
+		JOIN transaccion_por_caja AS tc ON (tc.nro_trans = transf.nro_trans))
+		JOIN cliente AS cl ON (cl.nro_cliente = transf.nro_cliente)
+		);
 
 #-------------------------------------------------------------------------
 # Creacion de usuarios y otorgamiento de privilegios
 #-------------------------------------------------------------------------
 
-# Usuario admin
+/* Usuario admin */
 CREATE USER 'admin'@'localhost'  IDENTIFIED BY 'admin';
 GRANT ALL PRIVILEGES ON banco.* TO 'admin'@'localhost' WITH GRANT OPTION;
+GRANT CREATE USER ON . TO 'admin'@'localhost';
 
-# Usuario empleado
+/* Usuario empleado */
 CREATE USER 'empleado'@'%'  IDENTIFIED BY 'empleado';
-GRANT SELECT ON banco.Empleado, banco.Sucursal, banco.Tasa_plazo_fijo, banco.Tasa_prestamo, banco.Prestamo TO 'empleado'@'%';
-GRANT SELECT,INSERT ON banco.Prestamo, banco.Plazo_fijo, banco.Plazo_cliente, banco.Caja_ahorro, banco.Tarjeta TO 'empleado'@'%';
-GRANT SELECT,INSERT,UPDATE ON banco.Cliente_CA, banco.Cliente, banco.Pago TO 'empleado'@'%';
-    
+GRANT SELECT ON banco.Empleado TO 'empleado'@'%';
+GRANT SELECT ON banco.Sucursal TO 'empleado'@'%';
+GRANT SELECT ON banco.Tasa_plazo_fijo TO 'empleado'@'%';
+GRANT SELECT ON banco.Tasa_prestamo TO 'empleado'@'%';
+GRANT SELECT ON banco.Prestamo TO 'empleado'@'%';
+GRANT SELECT,INSERT ON banco.Prestamo TO 'empleado'@'%';
+GRANT SELECT,INSERT ON banco.Plazo_fijo TO 'empleado'@'%';
+GRANT SELECT,INSERT ON banco.Plazo_cliente TO 'empleado'@'%';
+GRANT SELECT,INSERT ON banco.Caja_ahorro TO 'empleado'@'%';
+GRANT SELECT,INSERT ON banco.Tarjeta TO 'empleado'@'%';
+GRANT SELECT,INSERT,UPDATE ON banco.Cliente_CA TO 'empleado'@'%';
+GRANT SELECT,INSERT,UPDATE ON banco.Cliente TO 'empleado'@'%'; 
+GRANT SELECT,INSERT,UPDATE ON banco.Pago TO 'empleado'@'%';
 
+
+CREATE USER 'atm'@'%'  IDENTIFIED BY 'atm';
+
+GRANT SELECT ON banco.trans_cajas_ahorro TO 'atm'@'%';
+GRANT SELECT ON banco.tarjeta TO 'atm'@'%';
+/* ACOMODAR 
+GRANT UPDATE ON banco.tarjeta.PIN TO 'atm'@'%';
+*/
 
