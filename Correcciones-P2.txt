@@ -1,0 +1,10 @@
+Verificar: OK.
+
+Vista: Actualmente la vista muestra una tupla por cada caja de ahorro relacionada con un cliente si éste hizo una transferencia,
+ como si la misma transferencia se hubiese realizado desde todas sus cajas de ahorro. 
+Solo se debería mostrar una tupla con el número de la caja desde la cual se realizó la transferencia.
+
+Usuarios: Muy bien. 
+El privilegio de lectura sobre Préstamo está duplicado para el empleado:
+GRANT SELECT ON banco.Prestamo TO 'empleado'@'%';
+GRANT SELECT,INSERT ON banco.Prestamo TO 'empleado'@'%';

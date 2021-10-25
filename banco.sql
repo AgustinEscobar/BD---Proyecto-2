@@ -1,3 +1,33 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@agusdeba 
+AgustinEscobar
+/
+BD---Proyecto-2
+Public
+1
+00
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+BD---Proyecto-2/banco.sql
+@AgustinEscobar
+AgustinEscobar jujuuuu
+Latest commit a3df74d 28 days ago
+ History
+ 1 contributor
+404 lines (324 sloc)  12.8 KB
+   
 CREATE DATABASE banco;
 USE banco;
 
@@ -360,13 +390,15 @@ FROM ((((extraccion AS ex JOIN caja_ahorro AS ca ON (ex.nro_ca = ca.nro_ca))
 		)
 )
 UNION
-SELECT clca.nro_ca, saldo, transf.nro_trans, fecha, hora, 'transferencia' AS tipo, monto, cod_caja, transf.nro_cliente, tipo_doc, nro_doc, nombre, apellido, destino
+(SELECT clca.nro_ca, saldo, transf.nro_trans, fecha, hora, 'transferencia' AS tipo, monto, cod_caja, transf.nro_cliente, tipo_doc, nro_doc, nombre, apellido, destino
 FROM ((((((transferencia AS transf JOIN cliente_ca AS clca ON (transf.nro_cliente = clca.nro_cliente))
 		JOIN caja_ahorro AS ca ON (ca.nro_ca = clca.nro_ca))
 		JOIN transaccion AS transa ON (transa.nro_trans = transf.nro_trans)))
 		JOIN transaccion_por_caja AS tc ON (tc.nro_trans = transf.nro_trans))
 		JOIN cliente AS cl ON (cl.nro_cliente = transf.nro_cliente)
-		);
+		)
+WHERE (transf.origen = clca.nro_ca) /* caja ahorro cliente tiene que tener el mismo origen*/
+);
 
 #-------------------------------------------------------------------------
 # Creacion de usuarios y otorgamiento de privilegios
@@ -383,7 +415,6 @@ GRANT SELECT ON banco.Empleado TO 'empleado'@'%';
 GRANT SELECT ON banco.Sucursal TO 'empleado'@'%';
 GRANT SELECT ON banco.Tasa_plazo_fijo TO 'empleado'@'%';
 GRANT SELECT ON banco.Tasa_prestamo TO 'empleado'@'%';
-GRANT SELECT ON banco.Prestamo TO 'empleado'@'%';
 GRANT SELECT,INSERT ON banco.Prestamo TO 'empleado'@'%';
 GRANT SELECT,INSERT ON banco.Plazo_fijo TO 'empleado'@'%';
 GRANT SELECT,INSERT ON banco.Plazo_cliente TO 'empleado'@'%';
@@ -398,7 +429,3 @@ CREATE USER 'atm'@'%'  IDENTIFIED BY 'atm';
 
 GRANT SELECT ON banco.trans_cajas_ahorro TO 'atm'@'%';
 GRANT SELECT ON banco.tarjeta TO 'atm'@'%';
-/* ACOMODAR 
-GRANT UPDATE ON banco.tarjeta.PIN TO 'atm'@'%';
-*/
-
