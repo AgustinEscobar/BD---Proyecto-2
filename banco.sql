@@ -1,3 +1,33 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@agusdeba 
+AgustinEscobar
+/
+BD---Proyecto-2
+Public
+1
+00
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+BD---Proyecto-2/banco.sql
+@AgustinEscobar
+AgustinEscobar jujuuuu
+Latest commit a3df74d 28 days ago
+ History
+ 1 contributor
+404 lines (324 sloc)  12.8 KB
+   
 CREATE DATABASE banco;
 USE banco;
 
@@ -367,6 +397,10 @@ FROM ((((((transferencia AS transf JOIN cliente_ca AS clca ON (transf.nro_client
 		)
 WHERE (transf.origen = clca.nro_ca) /* caja ahorro cliente tiene que tener el mismo origen*/
 );
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d7fabacc0cde515efb880f2425b79a452e5c819
 #-------------------------------------------------------------------------
 # Creacion de usuarios y otorgamiento de privilegios
 #-------------------------------------------------------------------------
@@ -382,7 +416,6 @@ GRANT SELECT ON banco.Empleado TO 'empleado'@'%';
 GRANT SELECT ON banco.Sucursal TO 'empleado'@'%';
 GRANT SELECT ON banco.Tasa_plazo_fijo TO 'empleado'@'%';
 GRANT SELECT ON banco.Tasa_prestamo TO 'empleado'@'%';
-GRANT SELECT ON banco.Prestamo TO 'empleado'@'%';
 GRANT SELECT,INSERT ON banco.Prestamo TO 'empleado'@'%';
 GRANT SELECT,INSERT ON banco.Plazo_fijo TO 'empleado'@'%';
 GRANT SELECT,INSERT ON banco.Plazo_cliente TO 'empleado'@'%';
@@ -395,4 +428,8 @@ GRANT SELECT,INSERT,UPDATE ON banco.Pago TO 'empleado'@'%';
 /* Usuario atm */
 CREATE USER 'atm'@'%'  IDENTIFIED BY 'atm';
 GRANT SELECT ON banco.trans_cajas_ahorro TO 'atm'@'%';
+<<<<<<< HEAD
 GRANT SELECT,UPDATE ON banco.tarjeta TO 'atm'@'%';
+=======
+GRANT SELECT ON banco.tarjeta TO 'atm'@'%';
+>>>>>>> 3d7fabacc0cde515efb880f2425b79a452e5c819
